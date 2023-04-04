@@ -20,90 +20,51 @@ export function App() {
   const [modalImages, setModalImages] = useState('');
 
   const handleSearchBarSubmit = imageName => {
-    setImageName({
-      imageName,
-      page: 1,
-      images: [],
-    });
+    setImageName(imageName);
+    setPage(1);
+    setImages([]);
   };
 
   useEffect(() => {
-    // if (prevState.imageName !== imageName || prevState.page !== page) {
     if (!imageName || !page) {
+      return;
+    }
+    const renderGallery = async () => {
       setLoading(true);
 
-      const response = fetchImagesGallery(imageName, page);
+      try {
+        const { hits, totalHits } = await fetchImagesGallery(imageName, page);
 
-      if (response.status !== 200 || response.data.hits.length === 0) {
-        setError(toast.error('Something went wrong. Please try again!'));
-      }
-      setTotalImages(response.data.totalHits);
-      setImages(prevState => {
-        return {
-          images: [...prevState.images, ...response.data.hits],
-        };
-      }).catch(error => {
-        setError(
-          toast.error(
-            'Sorry, there are no images matching your request. Please try again.'
-          )
+        if (hits.length === 0) {
+          toast.error('Something went wrong. Please try again!');
+        }
+        setImages(images => [...images, ...hits]);
+        setTotalImages(totalHits);
+      } catch (error) {
+        setError(error);
+        toast.error(
+          'Sorry, there are no images matching your request. Please try again.'
         );
-      });
-    }
-    setLoading(false);
-  });
+      } finally {
+        setLoading(false);
+      }
+    };
+    renderGallery();
+  }, [imageName, page]);
 
-  // async componentDidUpdate(_, prevState) {
-  //   const prevName = prevState.imageName;
-  //   const nextName = this.state.imageName;
-
-  //   if (prevName !== nextName || prevState.page !== this.state.page) {
-  //     this.setState({ loading: true });
-  //     try {
-  //       const response = await fetchImagesGallery(nextName, this.state.page);
-
-  //       if (response.status !== 200 || response.data.hits.length === 0) {
-  //         return toast.error('Something went wrong. Please try again!');
-  //       }
-  //       this.setState({
-  //         totalImages: response.data.totalHits,
-  //       });
-  //       this.setState(prevState => {
-  //         return {
-  //           images: [...prevState.images, ...response.data.hits],
-  //         };
-  //       });
-  //     } catch (error) {
-  //       return toast.error(
-  //         'Sorry, there are no images matching your request. Please try again.'
-  //       );
-  //     } finally {
-  //       this.setState({ loading: false });
-  //     }
-  //   }
-  // }
   const handleIncrementPage = () => {
-    setPage(prevState => ({
-      page: prevState.page + 1,
-    }));
+    setPage(prevState => prevState.page + 1);
   };
-
-  // toggleModal = () => {
-  //   this.setState(({ showModal }) => ({
-  //     showModal: !showModal,
-  //   }));
-  // };
 
   const toggleModal = () => {
     setShowModal(!showModal);
   };
-  // imageClick = imageUrl => {
-  //   this.setState({ modalImage: imageUrl, showModal: true });
-  // };
 
   const imageClick = imageUrl => {
-    setModalImages({ modalImages: imageUrl, showModal: true });
+    setModalImages(imageUrl);
+    setShowModal(true);
   };
+
   const maxPage = Math.ceil(totalImages / 12);
   const showButton = images.length >= 12 && page < maxPage;
   return (
