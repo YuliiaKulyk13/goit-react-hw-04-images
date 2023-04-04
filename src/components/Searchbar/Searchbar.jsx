@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { FcSearch } from 'react-icons/fc';
 import { toast } from 'react-toastify';
-import { Component } from 'react';
+
 import {
   Button,
   ButtonSearch,
@@ -9,46 +10,40 @@ import {
   InputSearch,
 } from './Searchbar.styled';
 
-export class Searchbar extends Component {
-  state = {
-    imageName: '',
+export function Searchbar({ onSubmit }) {
+  const [imageName, setImageName] = useState('');
+
+  const handleNameChange = event => {
+    setImageName(event.currentTarget.value.toLowerCase());
   };
 
-  handleNameChange = event => {
-    this.setState({ imageName: event.currentTarget.value.toLowerCase() });
-  };
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
 
-    if (this.state.imageName.trim() === '') {
+    if (imageName.trim() === '') {
       return toast.warn('Please enter a request!');
     }
 
-    this.props.onSubmit(this.state.imageName);
-    this.setState({ imageName: '' });
+    onSubmit(imageName);
+    setImageName('');
   };
 
-  render() {
-    return (
-      <Header>
-        <Form onSubmit={this.handleSubmit}>
-          <Button type="submit">
-            <FcSearch size="30" />
-            <ButtonSearch>Search</ButtonSearch>
-          </Button>
+  return (
+    <Header>
+      <Form onSubmit={handleSubmit}>
+        <Button type="submit">
+          <FcSearch size="30" />
+          <ButtonSearch>Search</ButtonSearch>
+        </Button>
 
-          <InputSearch
-            type="text"
-            name="imageName"
-            value={this.state.imageName}
-            onChange={this.handleNameChange}
-            placeholder="Search images and photos"
-          />
-        </Form>
-      </Header>
-    );
-  }
+        <InputSearch
+          type="text"
+          name="imageName"
+          value={imageName}
+          onChange={handleNameChange}
+          placeholder="Search images and photos"
+        />
+      </Form>
+    </Header>
+  );
 }
-
-export default Searchbar;
