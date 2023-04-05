@@ -15,6 +15,7 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalImages, setTotalImages] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalImages, setModalImages] = useState('');
@@ -29,7 +30,7 @@ export function App() {
     if (!imageName || !page) {
       return;
     }
-    const renderGallery = async () => {
+    const createGallery = async () => {
       setLoading(true);
 
       try {
@@ -49,7 +50,7 @@ export function App() {
         setLoading(false);
       }
     };
-    renderGallery();
+    createGallery();
   }, [imageName, page]);
 
   const handleIncrementPage = () => {

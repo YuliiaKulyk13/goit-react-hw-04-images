@@ -3,14 +3,6 @@ import React from 'react';
 import { ModalBackdrop, ModalContent } from './Modal.styled';
 
 const Modal = ({ onClose, image }) => {
-  // componentDidMount() {
-  //   window.addEventListener('keydown', this.handleKeyDown);
-  // }
-
-  // componentWillUnmount() {
-  //   window.removeEventListener('keydown', this.handleKeyDown);
-  // }
-
   useEffect(() => {
     const handleKeyDown = e => {
       if (e.code === 'Escape') {
