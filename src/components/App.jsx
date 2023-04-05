@@ -15,7 +15,6 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalImages, setTotalImages] = useState(0);
-  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalImages, setModalImages] = useState('');
@@ -34,13 +33,13 @@ export function App() {
       setLoading(true);
 
       try {
-        const { hits, totalHits } = await fetchImagesGallery(imageName, page);
+        const { data } = await fetchImagesGallery(imageName, page);
 
-        if (hits.length === 0) {
+        if (data.hits.length === 0) {
           toast.error('Something went wrong. Please try again!');
         }
-        setImages(images => [...images, ...hits]);
-        setTotalImages(totalHits);
+        setImages(images => [...images, ...data.hits]);
+        setTotalImages(data.totalHits);
       } catch (error) {
         setError(error);
         toast.error(
@@ -54,7 +53,7 @@ export function App() {
   }, [imageName, page]);
 
   const handleIncrementPage = () => {
-    setPage(prevState => prevState.page + 1);
+    setPage(prevPage => prevPage + 1);
   };
 
   const toggleModal = () => {
@@ -75,6 +74,7 @@ export function App() {
 
       {images.length && <ImageGallery items={images} onClick={imageClick} />}
       <ToastContainer autoClose={3000} />
+      {error && <p>{error.message}</p>}
       {loading && <Loader />}
       {showButton && <LoadMoreBtn onClick={handleIncrementPage} />}
     </Container>
