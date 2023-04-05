@@ -72,7 +72,7 @@ export function App() {
       <Searchbar onSubmit={handleSearchBarSubmit} />
       {showModal && <Modal image={modalImages} onClose={toggleModal} />}
 
-      {images.length && <ImageGallery items={images} onClick={imageClick} />}
+      {images && <ImageGallery items={images} onClick={imageClick} />}
       <ToastContainer autoClose={3000} />
       {error && <p>{error.message}</p>}
       {loading && <Loader />}
